@@ -1,0 +1,27 @@
+{
+  "name": "shopify-theme-delete-runner",
+  "version": "1.0.0",
+  "description": "Interactive multi-select tool to delete Shopify themes safely",
+  "type": "module",
+  "bin": {
+    "shopify-theme-delete": "./delete-themes.mjs"
+  },
+  "scripts": {
+    "start": "node delete-themes.mjs",
+    "themes:delete": "node delete-themes.mjs"
+  },
+  "keywords": [
+    "shopify",
+    "theme",
+    "cli",
+    "delete"
+  ],
+  "author": "d-farrell",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "@inquirer/prompts": "^7.8.0"
+  }
+}
