@@ -10,6 +10,7 @@ Shopify CLI’s built-in `shopify theme delete` is often single-select. This run
 - Confirm before anything is deleted
 - Choose any store you can access
 - Live themes are blocked from selection
+- Clear on-screen keyboard instructions while selecting
 
 ## Requirements
 
@@ -48,11 +49,13 @@ node delete-themes.mjs
 ### Flow
 
 1. Enter a store name or domain  
-   Examples: `exco-dev-coley` or `exco-dev-coley.myshopify.com`
-2. Multi-select themes:
-   - `↑` / `↓` move
-   - `Space` tick / untick
-   - `Enter` confirm selection
+   Examples: `my-store` or `my-store.myshopify.com`
+2. Multi-select themes (instructions appear under the list in orange):
+   - `↑` / `↓` move between themes
+   - `Space` select or deselect a theme
+   - `a` select all
+   - `i` invert selection
+   - `Enter` confirm when done
 3. Confirm you are happy with the list
 4. Choose **Delete selected themes** or **Cancel**
 

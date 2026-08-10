@@ -5,7 +5,7 @@ import { checkbox, confirm, input, select } from '@inquirer/prompts'
 
 /**
  * Why: Shopify CLI accepts short store names or full domains.
- * We normalise so both "exco-dev-coley" and "exco-dev-coley.myshopify.com" work.
+ * We normalise so both "my-store" and "my-store.myshopify.com" work.
  */
 function normalizeStore (rawStore) {
   const cleaned = rawStore
@@ -73,11 +73,18 @@ function formatThemeLabel (theme) {
   return `${theme.name}  [${role}]  (ID: ${theme.id})`
 }
 
+/**
+ * Why: Terminal named colours have no orange. Truecolor RGB gives a clear orange.
+ */
+function colorOrange (text) {
+  return `\u001B[38;2;255;140;0m${text}\u001B[0m`
+}
+
 async function main () {
   console.log('\nShopify multi-theme delete\n')
 
   const storeInput = await input({
-    message: 'Store (e.g. exco-dev-coley or exco-dev-coley.myshopify.com):',
+    message: 'Store (e.g. my-store or my-store.myshopify.com):',
     validate: (value) => {
       if (value.trim().length === 0) {
         return 'Enter a store name or domain.'
@@ -99,7 +106,14 @@ async function main () {
   }
 
   const selectedIds = await checkbox({
-    message: 'Select themes to delete (Space to toggle, Enter to confirm):',
+    message: 'Select themes to delete:',
+    instructions: colorOrange([
+      '↑ / ↓  Move between themes',
+      'Space  Select or deselect a theme',
+      'a      Select all',
+      'i      Invert selection',
+      'Enter  Confirm when done'
+    ].join('\n')),
     pageSize: 20,
     choices: themes.map((theme) => {
       const live = isLiveTheme(theme)
