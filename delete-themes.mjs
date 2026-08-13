@@ -43,6 +43,27 @@ function runShopify (args) {
 }
 
 /**
+ * Why: theme list can work with a weak session. Delete needs full login/verify.
+ * Run auth early so browser prompts appear before any theme selection.
+ */
+function ensureShopifyLogin () {
+  console.log('\nVerifying Shopify login...')
+  console.log('Complete any browser or device prompts, then return here.\n')
+
+  const result = spawnSync('shopify', ['auth', 'login'], {
+    stdio: 'inherit'
+  })
+
+  if (result.error) {
+    throw result.error
+  }
+
+  if (result.status !== 0) {
+    throw new Error('Shopify login failed or was cancelled.')
+  }
+}
+
+/**
  * Why: CLI can print warnings before JSON. We extract the JSON array safely.
  */
 function parseThemesJson (stdout) {
@@ -95,6 +116,18 @@ async function main () {
   })
 
   const store = normalizeStore(storeInput)
+
+  ensureShopifyLogin()
+
+  const loggedInOk = await confirm({
+    message: `Are you logged into the correct Shopify account for ${store}?`,
+    default: false
+  })
+
+  if (loggedInOk !== true) {
+    console.log('\nCancelled. Log into the correct account, then run again.')
+    return
+  }
 
   console.log(`\nFetching themes from ${store}...\n`)
 
