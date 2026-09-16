@@ -101,6 +101,13 @@ function colorOrange (text) {
   return `\u001B[38;2;255;140;0m${text}\u001B[0m`
 }
 
+/**
+ * Why: Destructive counts need to stand out from normal log lines.
+ */
+function emphasize (text) {
+  return `\u001B[1m${colorOrange(text)}\u001B[0m`
+}
+
 async function main () {
   console.log('\nShopify multi-theme delete\n')
 
@@ -170,14 +177,17 @@ async function main () {
     return selectedIds.includes(String(theme.id))
   })
 
-  console.log('\nYou selected:')
+  const selectedCount = selectedThemes.length
+  const themeWord = selectedCount === 1 ? 'theme' : 'themes'
+
+  console.log(`\n${emphasize(`You selected ${selectedCount} ${themeWord}:`)}`)
   for (const theme of selectedThemes) {
     console.log(`- ${formatThemeLabel(theme)}`)
   }
   console.log('')
 
   const happyWithSelection = await confirm({
-    message: 'Are you happy with this selection?',
+    message: `Are you happy with this selection? (${selectedCount} ${themeWord})`,
     default: false
   })
 
@@ -190,7 +200,7 @@ async function main () {
     message: 'What do you want to do?',
     choices: [
       {
-        name: 'Delete selected themes',
+        name: `Delete selected themes (${selectedCount})`,
         value: 'delete'
       },
       {
@@ -217,10 +227,10 @@ async function main () {
     deleteArgs.push('--theme', String(theme.id))
   }
 
-  console.log('\nDeleting selected themes...\n')
+  console.log(`\n${emphasize(`Deleting ${selectedCount} ${themeWord}...`)}\n`)
   runShopify(deleteArgs)
 
-  console.log('Done. Selected themes were deleted.')
+  console.log(emphasize(`Done. ${selectedCount} ${themeWord} deleted.`))
 }
 
 main().catch((error) => {
